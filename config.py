@@ -25,9 +25,9 @@ class Config(object):
     nz          = 100                   # num of dim for Z at each field position
     zx          = 9                     # number of spatial dimensions in Z
     zx_sample   = 20                    # size of the spatial dimension in Z for producing the samples
-    nc          = 3                     # number of channels in input X (i.e. r,g,b)
-    gen_ks      = ([(5,5)] * 5)[::-1]   # kernel sizes on each layer - should be odd numbers for zero-padding stuff
-    dis_ks      = [(5,5)] * 5           # kernel sizes on each layer - should be odd numbers for zero-padding stuff
+    nc          = 1                     # number of channels in input X (i.e. r,g,b)
+    gen_ks      = ([(5,5)] * 4)[::-1]   # kernel sizes on each layer - should be odd numbers for zero-padding stuff
+    dis_ks      = [(5,5)] * 4           # kernel sizes on each layer - should be odd numbers for zero-padding stuff
     gen_ls      = len(gen_ks)           # num of layers in the generative network
     dis_ls      = len(dis_ks)           # num of layers in the discriminative network
     gen_fn      = [nc]+[2**(n+6) for n in range(gen_ls-1)]  # generative number of filters
@@ -48,9 +48,9 @@ class Config(object):
 
     ##
     # data input folder
-    sub_name    = 'efros2'
-    home        = os.path.expanduser("~")
-    texture_dir = home + "/my_data/%s/" % sub_name
+    sub_name    = 'bangladesh'
+    home        = None #os.path.expanduser("~/srv")
+    texture_dir = "./%s/" % sub_name #home +
     data_iter   = get_texture_iter(texture_dir, npx=npx, mirror=False, batch_size=batch_size)
 
     save_name   = sub_name+ "_filters%d_npx%d_%dgL_%ddL" % (dis_fn[0],npx,gen_ls, dis_ls)

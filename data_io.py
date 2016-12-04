@@ -9,6 +9,8 @@ def image_to_tensor(img):
     convert image to Theano/Lasagne 3-tensor format;
     changes channel dimension to be in the first position and rescales from [0,255] to [-1,1]
     '''
+    print "lel"
+    print img.shape
     tensor = np.array(img).transpose( (2,0,1) )
     tensor = tensor / 128. - 1.
     return tensor
@@ -38,19 +40,27 @@ def get_texture_iter(folder, npx=128, batch_size=64, \
     files = os.listdir(folder)
     for f in files:
         name = folder + f
-        try:
-            img = Image.open(name)
+        #try:
+        print "lel"
+        img = Image.open(name)
+        img = np.array(img)
+        gray = np.mean(img, -1)
+        img = gray
+        img = np.array(img)[ :, : , np.newaxis]
+        
+        print img.shape
+        #print np.array(img).shape
+        imTex += [image_to_tensor(img)]
+        if mirror:
+            img = img.transpose(FLIP_LEFT_RIGHT)
             imTex += [image_to_tensor(img)]
-            if mirror:
-                img = img.transpose(FLIP_LEFT_RIGHT)
-                imTex += [image_to_tensor(img)]
-        except:
-            print "Image ", name, " failed to load!"
-
+        #except:
+        print "Image ", name, " failed to load!"
+    print imTex
     while True:
-        data=np.zeros((batch_size,3,npx,npx))                   # NOTE: assumes 3 channels!
+        data=np.zeros((batch_size,1,npx,npx))                   # NOTE: assumes 3 channels!
         for i in range(batch_size):
-            ir = np.random.randint(len(imTex))
+            ir = np.random.randint(low=0, high=len(imTex))
             imgBig = imTex[ir]
             if HW < imgBig.shape[1] and HW < imgBig.shape[2]:   # sample patches
                 h = np.random.randint(imgBig.shape[1] - HW)
@@ -67,8 +77,10 @@ def save_tensor(tensor, filename):
     '''
     save a 3-tensor (channel, x, y) to image file
     '''
+    print tensor.shape
     img = tensor_to_image(tensor)
-    img = Image.fromarray(img)
+    print img.shape
+    img = Image.fromarray(img[:, :, 0])
     img.save(filename)
 
 
